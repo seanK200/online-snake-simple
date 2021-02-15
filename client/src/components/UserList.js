@@ -1,23 +1,24 @@
 import React from 'react'
+import { useGameData } from '../contexts/GameDataProvider';
 import User from './User'
 
-export default function UserList({ gameState, myId }) {
-    let users = []; //{userId, score, status: winner, playing, dead, disconnected ready, not ready}
-    gameState.snakes.forEach((snake, index) => {
-        users.push({
-            userId: snake.userId,
-            userIndex: index,
-            score: snake.pos.length,
-            status: snake.status,
-            gameManager: snake.gameManager
-        })
-    })
-    if(gameState.winner !== '') users.sort((a, b) => b.score - a.score);
-    
+export default function UserList() {
+    const { users, gameState, myUserId, matchId } = useGameData();
+
     return (
         <div className="d-flex flex-column ml-3 p-3" style={{ background: '#0e0f12' }}>
-            {users.map((user) => {
-                return <User userInfo={user} myself={user.userId === myId} />;
+            <div className="pb-1 mb-2 w-100 border-bottom border-white">{users.length} users in '{matchId}'</div>
+            {users
+                .sort((a, b) => b.score - a.score)
+                .map((user, index) => {
+                return (
+                    <User 
+                        key={index}
+                        userInfo={user} 
+                        userIndex={index} 
+                        gameStarted={gameState.gameStarted} 
+                        myself={user.userId === myUserId} />
+                );
             })}
         </div>
     )

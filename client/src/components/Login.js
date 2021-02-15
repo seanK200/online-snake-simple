@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap';
 
 export default function Login({ onLogin }) {
-    const [id, setId] = useState('');
+    const [userId, setUserId] = useState('');
+    const [matchId, setMatchId] = useState('');
     const loginFormRef = useRef();
 
     function handleSubmit(e) {
         e.preventDefault();
-        onLogin(id);
+        // userJoin(id);
+        onLogin(userId, matchId);
     }
 
     useEffect(()=> {
@@ -18,17 +20,26 @@ export default function Login({ onLogin }) {
         <div className="w-25">
             <h1>Online Snake</h1>
             <Form onSubmit={handleSubmit} className="mt-4">
-                <Form.Group>
-                    <Form.Label>Enter ID</Form.Label>
+                <Form.Group className="mb-3">
+                    <Form.Label>Enter User ID</Form.Label>
                     <Form.Control 
                         type="text"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
                         ref={loginFormRef}
                     />
-                    {id==='' ? <Button type="submit" className="mt-3" disabled>Login</Button> : <Button type="submit" className="mt-3">Login</Button>}
-                    
                 </Form.Group>
+                <Form.Group>
+                    <Form.Label>Enter Match ID</Form.Label>
+                    <Form.Control 
+                        type="text"
+                        value={matchId}
+                        onChange={(e) => setMatchId(e.target.value)}
+                    />
+                </Form.Group>
+                {(userId==='' || matchId==='') 
+                    ? <Button type="submit" className="mt-4" disabled>Join</Button> 
+                    : <Button type="submit" className="mt-4">Join</Button>}
             </Form>
         </div>
     )

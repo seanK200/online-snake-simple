@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react'
 import Square from './Square'
 
-export default function Board({ gameState }) {
-    const gameSizeX = 30;
-    const gameSizeY = 20;
+export default function Board({ gameState, users }) {
+    // console.log("Rendering board");
+    const gameSizeX = gameState.gameSizeX;
+    const gameSizeY = gameState.gameSizeY;
+
+
+    function getPosX(pos) {
+        return pos % gameSizeX;
+    }
+
+    function getPosY(pos) {
+        return Math.floor(pos / gameSizeX);
+    }
 
     let boardState = [];
     for (let i=0; i<gameSizeY; i++) boardState.push(Array(gameSizeX).fill(0));
-    boardState[gameState.food[1]][gameState.food[0]] = 1;
+    boardState[getPosY(gameState.food)][getPosX(gameState.food)] = 1;
     //set snakes
-    gameState.snakes.forEach((snake, userIndex) => {
-        snake.pos.forEach((snakePos) => {
-            boardState[snakePos[1]][snakePos[0]] = 2 + userIndex;
+    users.forEach((user, userIndex) => {
+        user.snakePos.forEach((p) => {
+            if(p >= 0) boardState[getPosY(p)][getPosX(p)] = 2 + userIndex;
         });
     });
 
@@ -19,9 +28,10 @@ export default function Board({ gameState }) {
         <div className="d-flex flex-column">
             {boardState.map((row, rowIndex) => {
                 return (
-                    <div className="d-flex">
+                    <div className="d-flex" key={rowIndex}>
                         {row.map((sq, colIndex) => {
-                            return <Square type={sq} key={(rowIndex*10 + colIndex)}/>
+                            const keyValue = rowIndex*gameSizeX + colIndex;
+                            return <Square type={sq} key={keyValue} num={keyValue}/>
                         })}
                     </div>
                 );
